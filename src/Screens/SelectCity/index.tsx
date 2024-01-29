@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { cities } from '../../Utils/Data'
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SelectCity = () => {
 
@@ -53,7 +54,8 @@ const SelectCity = () => {
             elevation: 10,
           }}
           onPress={() => {
-            navigation.replace('MyDrawer')
+            AsyncStorage.setItem("login","on")
+            navigation.replace('MyDrawer');
           }}>
           <Text
             style={{

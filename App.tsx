@@ -16,7 +16,7 @@ const App = () => {
   return (
     <>
       <NavigationContainer>
-        {isloaded ? <Navigation  /> : <SplashScreen />}
+        {isloaded ? <Navigation /> : <SplashScreen />}
       </NavigationContainer>
     </>
   );

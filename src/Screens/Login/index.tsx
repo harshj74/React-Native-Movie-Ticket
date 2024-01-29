@@ -6,6 +6,7 @@ import { Dimensions } from 'react-native';
 import { handleEmail, handleMobileno, handlePassword, handleUsername } from '../../Utils';
 import MovieTicket from '../../../img/MovieTicket.png';
 import firestore, { firebase } from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const { height, width } = Dimensions.get('window');
 
 const Login = () => {
@@ -20,8 +21,11 @@ const Login = () => {
 
         if (querySnapshot.docs.length > 0) {
           if (querySnapshot.docs[0]._data.email === email && querySnapshot.docs[0]._data.password === password) {
-            //Alert.alert("User logged in successfully !");
-            navigation.replace('Language');
+            AsyncStorage.getItem("login").then((value) => {
+              value != null ? navigation.replace('MyDrawer') : navigation.replace('Language');
+            })
+
+
             setEmail('');
             setPassword('');
           } else {

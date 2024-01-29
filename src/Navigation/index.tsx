@@ -18,9 +18,8 @@ import Reviews from '../Screens/Reviews';
 const Stack = createNativeStackNavigator();
 
 const Navigation = () => {
-
     return (
-        <Stack.Navigator initialRouteName='MyDrawer'>
+        <Stack.Navigator initialRouteName='Onboard'>
             <Stack.Screen
                 name="MyDrawer"
                 component={MyDrawer}
