@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "270250177236",
+    "project_id": "movie-ticket-9ddbf",
+    "storage_bucket": "movie-ticket-9ddbf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:270250177236:android:776a0a95734cb37635c141",
+        "android_client_info": {
+          "package_name": "com.movieticket"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0BFDJYMEU_RjrJfLEB7HytEspH0DUyvE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
