@@ -6,10 +6,13 @@ import { Dimensions } from 'react-native';
 import { handleEmail, handleMobileno, handlePassword, handleUsername } from '../../Utils';
 import firestore, { firebase } from '@react-native-firebase/firestore';
 import messeging from '@react-native-firebase/messaging';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import secret from '../../../img/secret.png'
+import public1 from '../../../img/public.png'
 const { height, width } = Dimensions.get('window');
 
 const SignUp = () => {
- 
+
   const saveData = () => {
     firestore()
       .collection('Users')
@@ -42,11 +45,13 @@ const SignUp = () => {
   const [usercheck, setUserCheck] = useState(true);
   const [mobilecheck, setMobileCheck] = useState(true);
 
+  const [visible, setvisible] = useState(true);
+
   const navigation = useNavigation<NavigationProp<any>>();
 
   return (
 
-    <ScrollView style={{ backgroundColor: 'white' }}>
+    <KeyboardAwareScrollView style={{ backgroundColor: 'white' }}>
       <View style={styles.container}>
         <Text style={styles.header}>Sign Up</Text>
         <View style={styles.container2}>
@@ -54,7 +59,12 @@ const SignUp = () => {
           <View style={styles.container3}>
             <Text style={styles.aboveinput}>Username</Text>
             <TextInput
-              style={styles.input}
+              style={{
+                ...styles.input,
+                borderColor: 'lightgrey',
+                borderRadius: 10,
+                borderWidth: 2
+              }}
               placeholder="Enter your Username"
               value={username}
               onChangeText={user => {
@@ -76,7 +86,12 @@ const SignUp = () => {
           <View style={styles.container3}>
             <Text style={styles.aboveinput}>Mobile No</Text>
             <TextInput
-              style={styles.input}
+              style={{
+                ...styles.input,
+                borderColor: 'lightgrey',
+                borderRadius: 10,
+                borderWidth: 2
+              }}
               placeholder="+91   |   Enter your Mobile No"
               value={mobileno}
               onChangeText={mob => {
@@ -98,7 +113,12 @@ const SignUp = () => {
           <View style={styles.container3}>
             <Text style={styles.aboveinput}>Email</Text>
             <TextInput
-              style={styles.input}
+              style={{
+                ...styles.input,
+                borderColor: 'lightgrey',
+                borderRadius: 10,
+                borderWidth: 2
+              }}
               placeholder="Enter your Email"
               value={email}
               onChangeText={text => {
@@ -119,21 +139,35 @@ const SignUp = () => {
 
           <View style={styles.container3}>
             <Text style={styles.aboveinput}>Password</Text>
-            <TextInput
-              secureTextEntry={true}
-              style={styles.input}
-              placeholder="Password"
-              value={password}
-              onChangeText={pass => {
-                setPassword(pass);
-                const value = handlePassword(pass);
-                if (!value) {
-                  setPassCheck(false);
-                  setPasswordValidError('');
-                } else {
-                  setPasswordValidError(value);
-                }
-              }}></TextInput>
+            <View style={{
+              flexDirection: 'row',
+              borderColor: 'lightgrey',
+              borderRadius: 10,
+              borderWidth: 2,
+              justifyContent: 'space-between'
+            }}>
+              <TextInput
+                secureTextEntry={visible}
+                style={{...styles.input, marginBottom:0}}
+                placeholder="Password"
+                value={password}
+                onChangeText={pass => {
+                  setPassword(pass);
+                  const value = handlePassword(pass);
+                  if (!value) {
+                    setPassCheck(false);
+                    setPasswordValidError('');
+                  } else {
+                    setPasswordValidError(value);
+                  }
+                }}></TextInput>
+              <TouchableOpacity onPress={() => {
+                setvisible(!visible)
+              }}
+                style={{  right: 5,  width: 50, alignItems: 'center', justifyContent: "center", alignSelf:'center' }}>
+                <Image tintColor='grey' style={{ height: 20, width: 20, }} source={visible ? secret : public1}></Image>
+              </TouchableOpacity>
+            </View>
 
             {passwordValidError ? (
               <Text style={styles.error}>
@@ -147,7 +181,7 @@ const SignUp = () => {
           <View style={{ margin: 10 }}>
             <View style={{ width: 200, alignSelf: 'center' }}>
               <TouchableOpacity
-                style={{...styles.button,backgroundColor: !(emailcheck || passcheck || usercheck || mobilecheck) ? '#ff5492' : '#E3E3E3' }}
+                style={{ ...styles.button, backgroundColor: !(emailcheck || passcheck || usercheck || mobilecheck) ? '#ff5492' : '#E3E3E3' }}
                 onPress={() => {
                   saveData();
                   //navigation.navigate('Login');
@@ -167,7 +201,7 @@ const SignUp = () => {
           </View>
         </View>
       </View>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -178,11 +212,11 @@ const styles = StyleSheet.create({
 
   input: {
     fontSize: 20,
-    borderWidth: 2,
     padding: 15,
+    //borderWidth: 2,
     marginBottom: 5,
-    borderColor: 'lightgrey',
-    borderRadius: 10,
+    //borderColor: 'lightgrey',
+    //borderRadius: 10,
   },
 
   button: {
@@ -192,7 +226,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     marginTop: 20,
-    elevation: 10,
+    //elevation: 10,
   },
 
   header: {

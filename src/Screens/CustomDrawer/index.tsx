@@ -25,7 +25,7 @@ const listArray1 = [
 ]
 const CustomDrawer = (props: any) => {
 
-    const navigation = useNavigation<NavigationProp<any>>();
+    const navigation = useNavigation<StackNavigationProp<{ route: {} }>>();
 
     const [isClicked, setisClicked] = useState('Home');
 
@@ -48,10 +48,10 @@ const CustomDrawer = (props: any) => {
                     navigation.dispatch(DrawerActions.jumpTo('Reviews'))
                     setisClicked('Reviews')
                 } else {
-                    navigation.navigate('Login')
+                    navigation.replace('Login')
                 }
             }}>
-                <Image source={icon} style={{ height: 25, width: 25, marginLeft: '2%' }} />
+                <Image source={icon} style={{ height: 25, width: 25, marginLeft: '2%' }} tintColor='#ff5492' />
                 <Text style={styles.title}>{title}</Text>
             </TouchableOpacity>
         </View>

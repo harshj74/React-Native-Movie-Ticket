@@ -47,8 +47,10 @@ const Language = () => {
             labelField="label"
             valueField="value"
             placeholder={!isFocus ? 'Language' : '...'}
+            itemTextStyle={{color:'black'}}
             searchPlaceholder="Search..."
             value={value}
+            //activeColor='red'
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
             onChange={item => {
@@ -118,7 +120,7 @@ const styles = StyleSheet.create({
     //backgroundColor: 'white',
     padding: 16,
     //borderWidth:1,
-
+    color:'black'
   },
   dropdown: {
     height: 50,

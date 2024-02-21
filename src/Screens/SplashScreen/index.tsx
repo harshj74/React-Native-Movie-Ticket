@@ -16,10 +16,9 @@ const SplashScreen = () => {
 
 const styles = StyleSheet.create({
     container: {
+        flex:1,
         display: 'flex',
         flexDirection: 'column',
-        height: '100%',
-        width: '100%',
         backgroundColor: 'white',
         justifyContent: 'center',
         alignItems: 'center'
@@ -27,7 +26,9 @@ const styles = StyleSheet.create({
     innerimage: {
         alignItems: 'center',
         resizeMode: 'contain',
-        width: '50%'
+        width: 200,
+        height: 260,
+        //backgroundColor:'red'
     },
     text1:{
         fontSize: 30,
@@ -42,11 +43,11 @@ const styles = StyleSheet.create({
         color:'#54768a'
     },
     innercontainer:{
-        display:'flex',
+        //display:'flex',
         flexDirection:'row',
-        alignContent:'space-between',
+        //alignContent:'space-between',
         columnGap:10,
-        bottom:100
+        //bottom:100
     }
 })
 

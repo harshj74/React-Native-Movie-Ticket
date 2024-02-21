@@ -1,14 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import Onboarding from 'react-native-onboarding-swiper';
 import { useNavigation, NavigationProp } from '@react-navigation/native'
 import Intro1 from '../../../img/Intro1.png'
 import Intro2 from '../../../img/Intro2.png'
 import Intro3 from '../../../img/Intro3.png'
+import { getAnimatedStyle } from 'react-native-reanimated';
 
 const Onboard = () => {
+    const [text, settext] = useState('sda');
     const navigation = useNavigation<NavigationProp<any>>()
-
     return (
         <View style={styles.container}>
             <Onboarding
@@ -16,69 +17,74 @@ const Onboard = () => {
                 onDone={() => navigation.replace('Login')}
                 pages={[
                     {
-                        title: '',
                         backgroundColor: 'white',
-                        image: <View style={{ height: "100%", width: "100%", justifyContent: "center", alignItems: "center" }}>
-                            <Text style={styles.uppertext}>The app has all the basic features of a ticket booking app</Text>
-                            <Image source={Intro1} style={styles.image
-                            } resizeMode='contain' />
-                            <Text style={styles.lowertext}>Which means users can check the tickes availability, price and demand</Text>
-                        </View>,
+                        titleStyles: {
+                            fontSize: 15,
+                            color: 'black',
+                            backgroundColor: 'white'
+                        },
+                        title: 'Which means users can check the ticket availability, price and demand',
+                        image:
+                            <View>
+                                <Text style={{
+                                    alignSelf:'center', fontSize: 20,  fontWeight: '700', 
+                                    color: 'black', bottom: '30%', textAlign: 'center', paddingHorizontal: 10
+                                }}>The app has all the basic features of a ticket booking app</Text>
+                                <Image style={styles.image} source={Intro1} />
+                            </View>,
                         subtitle: '',
                     },
                     {
-                        title: '',
                         backgroundColor: 'white',
-                        image: <View style={{ height: "100%", width: "100%", justifyContent: "center", alignItems: "center" }}>
-                            <Text style={styles.uppertext}>Additionally, they can book snacks to increase their movie-watching experience</Text>
-                            <Image source={Intro2} style={styles.image
-                            } resizeMode='contain' />
-                            <Text style={styles.lowertext}>Although the information displayed on a includes certain facts like the below</Text>
-                        </View>,
+                        titleStyles: {
+                            fontSize: 15,
+                            color: 'black',
+                            backgroundColor: 'white'
+                        },
+                        title: 'Although the information displayed on a include certain facts like the below',
+                        image:
+                            <View>
+                                <Text style={{
+                                    alignSelf: 'center', fontSize: 20, fontWeight: '700',
+                                    color: 'black', bottom: '30%', textAlign: 'center', paddingHorizontal:10
+                                }}>Additionally, they can book snacks to increase their watching experience</Text>
+                                <Image style={styles.image} source={Intro2} />
+                            </View>,
                         subtitle: '',
                     },
                     {
-                        title: '',
                         backgroundColor: 'white',
-                        image: <View style={{ height: "100%", width: "100%", justifyContent: "center", alignItems: "center" }}>
-                            <Text style={styles.uppertext}>This platform provides details such as what time a movie will be played</Text>
-                            <Image source={Intro3} style={styles.image
-                            } resizeMode='contain' />
-                            <Text style={styles.lowertext}>An online movie ticketing system is a digital platform that allows customers to access the services of a business, reserve seats and buy tickets</Text>
-                        </View>,
+                        titleStyles: {
+                            fontSize: 15,
+                            color: 'black',
+                            backgroundColor: 'white'
+                        },
+                        title: 'It is a platform that allows customers to access the services of a bussiness, reserve seats and buy tickets',
+                        image:
+                            <View>
+                                <Text style={{
+                                    alignSelf: 'center', fontSize: 20, fontWeight: '700',
+                                    color: 'black', bottom: '30%', textAlign: 'center', paddingHorizontal: 10
+                                }}>Platform provides details such as what time a movie will be played</Text>
+                                <Image style={styles.image} source={Intro3} />
+                            </View>,
                         subtitle: '',
                     },
-                ]}
-            />
+
+                ]} />
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        height: '100%',
+        flex: 1,
+        //backgroundColor: 'blue'
     },
     image: {
-        height: "50%",
-        width: "50%",
-        marginTop: 50,
-    },
-    uppertext: {
-        position: "absolute",
-        top: '15%',
-        fontSize: 20,
-        textAlign: 'center',
-        color: 'black',
-        fontWeight: '700',
-        marginLeft: 30
-    },
-    lowertext: {
-        position: "absolute",
-        bottom: '10%',
-        display: 'flex',
-        textAlign: 'center',
-        color: 'black',
-        marginLeft: 30
+        height: 250,
+        width: 360,
+        alignSelf: 'center'
     },
 });
 

@@ -14,12 +14,34 @@ import FAQ from '../Screens/FAQ';
 import Help from '../Screens/Help';
 import Header from '../Screens/Header';
 import Reviews from '../Screens/Reviews';
+import Model from '../Screens/Model';
+import Details from '../Screens/Details';
+import Theaters from '../Screens/Theaters';
+import { moviesData } from '../Firebase/firebase';
+import { useDispatch } from 'react-redux';
+import { cityAction, movieAction } from '../Redux/actions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator();
 
-const Navigation = () => {
+const Navigation = (props) => {
+    const dispatch = useDispatch();
+    
+    useEffect(() => {
+        moviesData().then((res) => {
+            //console.log(JSON.stringify(res));
+            dispatch(movieAction((res)))
+        })
+        AsyncStorage.getItem("city").then((value:any) => {
+            console.log(value)
+            dispatch(cityAction(value))
+        })
+    }, [])
+    
+    console.log("isOnboarding =>",props.isOnboarding);
+    
     return (
-        <Stack.Navigator initialRouteName='Onboard'>
+        <Stack.Navigator initialRouteName={props.isOnboarding ?'Onboard': 'Login'}>
             <Stack.Screen
                 name="MyDrawer"
                 component={MyDrawer}
@@ -56,6 +78,11 @@ const Navigation = () => {
                 options={{ headerShown: false }}
             />
             <Stack.Screen
+                name="Details"
+                component={Details}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
                 name="Profile"
                 component={Profile}
                 options={{ headerShown: false }}
@@ -76,8 +103,8 @@ const Navigation = () => {
                 options={{ headerShown: false }}
             />
             <Stack.Screen
-                name="Header"
-                component={Header}
+                name="Theaters"
+                component={Theaters}
                 options={{ headerShown: false }}
             />
         </Stack.Navigator>
