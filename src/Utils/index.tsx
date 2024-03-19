@@ -51,3 +51,11 @@ export const handleMobileno = (mob: string) => {
     return undefined;
   } 
 };
+
+export const handleName = (name: string) => {
+  if (name.length === 0) {
+    return 'Name should not be empty';
+  } else if (name.length > 0) {
+    return undefined;
+  }
+}

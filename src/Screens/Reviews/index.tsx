@@ -1,17 +1,19 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native'
 import React, { useState } from 'react'
 import Header from '../Header';
-import Review from '../../../img/review.png'
+import logo from '../../../img/logo.png'
 import Star1 from '../../../img/star1.png'
 import Star2 from '../../../img/star2.png'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { StretchOutY } from 'react-native-reanimated';
+import { DrawerActions, useNavigation } from '@react-navigation/native';
 
 const Reviews = () => {
 
   const [defaultRating, setDefaultRating] = useState(2);
   const [maxRating, setMaxRating] = useState([1, 2, 3, 4, 5]);
   const [visible, setVisible] = useState(false);
+
+  const navigation = useNavigation();
 
   const CustomRatingBar = () => {
     return (
@@ -38,18 +40,23 @@ const Reviews = () => {
 
   return (
     <View>
-      <Header title='Reviews'></Header>
-      <KeyboardAwareScrollView style={styles.container}>
-        <Image style={styles.img} source={Review}></Image>
+      <Header onPress={() => {
+        navigation.dispatch(DrawerActions.openDrawer())
+      }} title='Reviews'></Header>
+      <KeyboardAwareScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+        <View style={{height:50}} />
+        <Image style={styles.img} source={logo}></Image>
+        <View style={{ height: 50 }} />
         <Text style={styles.text1}>Please Rate The Movie Ticket Booking !</Text>
         <CustomRatingBar />
-        <Text style={styles.textStyle}>
+        {/* <Text style={styles.textStyle}>
           {defaultRating} / {Math.max.apply(null, maxRating)}
-        </Text>
+        </Text> */}
         <Text style={styles.text2}>Your Comments and Suggestions help us Improve the service quality better !</Text>
         <View style={styles.comment}>
           <TextInput multiline placeholderTextColor='black' placeholder='Enter Your Comment' ></TextInput>
         </View>
+        <View>
         <TouchableOpacity
           onPress={() => {
             setVisible(true)
@@ -57,9 +64,10 @@ const Reviews = () => {
               setVisible(false)
             }, 2000)
           }}
-          style={styles.submit}><Text style={styles.submittext}>Submit</Text></TouchableOpacity>
+            style={styles.submit}><Text style={styles.submittext}>Submit</Text></TouchableOpacity>
+        </View>
 
-        {visible ? <Text style={{ alignSelf: 'center', color: 'red', fontWeight: 'bold' }}>Review Submitted Successfully !</Text> : null}
+        {/* {visible ? <Text style={{ alignSelf: 'center', color: 'red', fontWeight: 'bold' }}>Review Submitted Successfully !</Text> : null} */}
       </KeyboardAwareScrollView>
     </View>
   )
@@ -96,18 +104,19 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 20,
     fontWeight: 'bold',
+    marginBottom:10
   },
   text2: {
+    marginTop: 30,
     textAlign: "center",
     color: 'grey',
     fontSize: 15,
     fontWeight: 'bold',
-    marginTop: 10,
     marginVertical: 25
   },
   img: {
-    height: 350,
-    width: 350,
+    height: 150,
+    width: 150,
     alignSelf: 'center',
     backgroundColor: 'white'
   },

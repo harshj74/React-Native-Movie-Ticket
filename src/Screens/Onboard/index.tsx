@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     },
     image: {
         height: 250,
-        width: 360,
+        width: 250,
         alignSelf: 'center'
     },
 });

@@ -1,38 +1,48 @@
 import { View, Text, StyleSheet, Image, ScrollView, ImageBackground, Modal, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { DrawerActions, NavigationProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 import Header from '../Header';
-import { moviegenres, nowShowing, popularcinemas, recommended, upComing } from '../../Utils/Data';
+import { moviegenres, popularcinemas } from '../../Utils/Data';
 import favourite from '../../../img/favourite.png'
-import star from '../../../img/star.png'
+import star from '../../../img/reviews.png'
 import like from '../../../img/like.png'
-import firestore from '@react-native-firebase/firestore'
-import { useSelector } from 'react-redux';
+import Close from '../../../img/close.png'
+import firestore, { firebase } from '@react-native-firebase/firestore'
+import { useDispatch, useSelector } from 'react-redux';
 import FastImage from 'react-native-fast-image';
+import Model from '../Model';
+import { visibleAction } from '../../Redux/actions';
+import auth from '@react-native-firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const Home = () => {
-
+  
   const navigation = useNavigation();
-
+  const movie: any[] = useSelector((state: any) => state.movieReducer.movie)
+  const [newmovie, setnewmovie] = useState(movie)
   const [isSelected, setIsSelected] = useState(0);
   const [isClicked, setIsClicked] = useState(true);
+  const [lang, setlang] = useState('');
 
   const [modalVisible, setModalVisible] = useState(false);
   const [data, setdata] = useState<any>({})
-
-  const movie:any[] = useSelector((state: any) => state.movieReducer.movie)
+  const dispatch = useDispatch();
+  const modvisible = useSelector((state: any) => state.visibleReducer.visible);
 
   // useEffect(() => {
   //   for (let index = 0; index < recommended.length; index++) {
   //     firestore().collection("Movies").doc(recommended[index].title).set(recommended[index])
   //   }
   // },[])
-
+  //console.log(lang);
   return (
 
     <View style={styles.container}>
-      <Header image title='Home'></Header>
+      <Header onPress={() => {
+        navigation.dispatch(DrawerActions.openDrawer())
+      }} image title='Home'></Header>
       <View style={{ flex: 1 }}>
 
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -57,7 +67,20 @@ const Home = () => {
                 }} onPress={() => {
                   setIsSelected(index);
                   setIsClicked(false);
-                  //const arr = [...]
+                  setlang(item)
+                  const arr = [...movie]
+                  const newArr = []
+                  for (let i = 0; i < arr.length; i++) {
+                    if (arr[i].language.includes(item)) {
+                      newArr.push(arr[i])
+                    }
+                  }
+                  if (item === "All") {
+                    setnewmovie(arr)
+                  }
+                  else {
+                    setnewmovie(newArr)
+                  }
                 }}>
                 <Text style={{
                   //fontWeight: isSelected == index ? 'bold' : '400',
@@ -97,12 +120,12 @@ const Home = () => {
                     <Text style={styles.modeltext}>{data?.certificate}</Text>
                     <Text style={styles.modeltext}>{data?.genre}</Text>
                   </View>
-                  
+
                 </View>
                 <View style={styles.bnmodalview}>
                   <TouchableOpacity onPress={() => {
                     //console.log(data)
-                    navigation.navigate('Details',{data})
+                    navigation.navigate('Details', { data })
                     setModalVisible(!modalVisible)
                   }}>
                     <Text style={styles.booknowmodal}>Book Now</Text>
@@ -116,12 +139,13 @@ const Home = () => {
           <FlatList
             horizontal
             showsHorizontalScrollIndicator={false}
-            data={movie.filter((res) => {
+            data={newmovie.filter((res) => {
               return res.movietype === "recommended"
             })}
             renderItem={({ item, index }) => {
+              //console.log("tesing : ",item);
               return (
-                (
+                
                   <View
                     style={{
                       backgroundColor: 'white',
@@ -143,7 +167,7 @@ const Home = () => {
                       </View>
                     </TouchableOpacity>
                   </View>
-                )
+                
               )
             }
             } />
@@ -159,7 +183,7 @@ const Home = () => {
 
           <FlatList
             numColumns={1}
-            data={movie.filter((res) => {
+            data={newmovie.filter((res) => {
               return res.movietype === "nowshowing"
             })}
             renderItem={({ item, index }) => (
@@ -261,42 +285,74 @@ const Home = () => {
           <FlatList
             horizontal
             showsHorizontalScrollIndicator={false}
-            data={movie.filter((res) => {
-            return res.movietype === "upcoming"
+            data={newmovie.filter((res) => {
+              return res.movietype === "upcoming"
             })}
             renderItem={({ item, index }) => (
-            <View
-              style={{
-                backgroundColor: 'white',
-                borderRadius: 10,
-                //borderWidth: 1,
-                margin: 10,
-                // marginBottom: 20
-              }}
-            >
-              <View style={{ borderRadius: 10 }}>
-                <FastImage style={styles.commingsoonimage} source={{ uri: item.img }} />
-                <View style={styles.likeview}>
-                  <Image style={{ height: 23, width: 23, tintColor: 'red' }} source={favourite} />
-                  <Text style={{ fontSize: 13, color: 'black', fontWeight: 'bold' }}>{item.fav}%</Text>
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  borderRadius: 10,
+                  //borderWidth: 1,
+                  margin: 10,
+                  // marginBottom: 20
+                }}
+              >
+                <View style={{ borderRadius: 10 }}>
+                  <FastImage style={styles.commingsoonimage} source={{ uri: item.img }} />
+                  <View style={styles.likeview}>
+                    <Image style={{ height: 23, width: 23, tintColor: 'red' }} source={favourite} />
+                    <Text style={{ fontSize: 13, color: 'black', fontWeight: 'bold' }}>{item.fav}%</Text>
+                  </View>
+                </View>
+                <View style={styles.cssecondview}>
+                  <Text style={styles.commingsoontext}>{item.title}</Text>
+                  <View style={{ flexDirection: 'row', gap: 10, paddingTop: 8, paddingBottom: 8 }}>
+                    <Text style={styles.commingsoontext}>{item.certificate}</Text>
+                    <Text style={styles.commingsoontext}>{item.genre}</Text>
+                  </View>
+                  <View>
+                    <Text style={styles.commingsoontextlast}>{item.type}</Text>
+                  </View>
                 </View>
               </View>
-              <View style={styles.cssecondview}>
-                <Text style={styles.commingsoontext}>{item.title}</Text>
-                <View style={{ flexDirection: 'row', gap: 10, paddingTop: 8, paddingBottom: 8 }}>
-                  <Text style={styles.commingsoontext}>{item.certificate}</Text>
-                  <Text style={styles.commingsoontext}>{item.genre}</Text>
-                </View>
-                <View>
-                  <Text style={styles.commingsoontextlast}>{item.type}</Text>
-                </View>
-              </View>
+            )} />
+          
+
+          <Model
+            pressOut={() => { }}
+            visible={modvisible}>
+            <View>
+              <TouchableOpacity
+                style={{ alignSelf: 'flex-end' }}
+                onPress={() => { dispatch(visibleAction(false)) } }>
+                <Image
+                  source={Close}
+                  style={{ height: 18, width: 18 }} />
+              </TouchableOpacity>
+              <Text style={styles.modeltext1}>Are You Sure You Want To Sign Out ?</Text>
             </View>
-          )} />
 
-
-
-
+            <View style={{ flexDirection: 'row', marginTop: 20 }}>
+              <TouchableOpacity
+                style={styles.ok}
+                onPress={() => {
+                  AsyncStorage.setItem('loggedin', '');
+                  auth()
+                    .signOut()
+                    .then(() => console.log('User signed out!'));
+                  navigation.replace('Login');
+                  dispatch(visibleAction(false))
+                }}>
+                <Text style={styles.oktext}>Logout</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.cancel}
+                onPress={() => { dispatch(visibleAction(false)) } }>
+                <Text style={styles.canceltext}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </Model>
 
         </ScrollView>
       </View>
@@ -540,8 +596,51 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     marginTop: 25,
     width: '100%',
-    alignSelf: 'center' 
-  }
+    alignSelf: 'center'
+  },
+
+  modeltext1: {
+    marginTop: 15,
+    alignSelf: 'center',
+    color: 'black',
+    fontSize: 18,
+    fontWeight: '600',
+    width: 260,
+    textAlign: 'center'
+  },
+
+  oktext: {
+    color: 'white',
+    alignSelf: 'center',
+    fontWeight: 'bold',
+    fontSize: 18
+  },
+
+  ok: {
+    backgroundColor: '#ff5492',
+    width: 145,
+    marginRight: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+
+  cancel: {
+    backgroundColor: 'white',
+    width: 145,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: 'grey'
+  },
+
+  canceltext: {
+    color: 'grey',
+    alignSelf: 'center',
+    fontWeight: 'bold',
+    fontSize: 18
+  },
 })
 
 export default Home;

@@ -1,16 +1,103 @@
-export const cities = [
-  'Bangalore',
-  'Delhi',
-  'Mumbai',
-  'Kolkata',
-  'Surat',
-  'Hyderabad',
-  'Vijayawada',
-  'Chennai',
-  'Vizag',
-  'Jaipur',
-  'Rajkot',
-  'Ahmedabad',
+export const languages = [
+  {
+    id: 1,
+    language: 'Hindi - हिंदी',
+    letter: 'अ',
+    color1: '#4091db',
+    color2: '#d9e9f8',
+  },
+  {
+    id: 2,
+    language: 'English - English',
+    letter: 'A',
+    color1: '#4cb74c',
+    color2:'#dbf1db',
+  },
+  {
+    id: 3,
+    language: 'Bengali - বাংলা',
+    letter: 'আ',
+    color1: '#41b886',
+    color2:'#d6f0e5'
+  },
+  {
+    id:4,
+    language: 'Marathi - मराठी',
+    letter: 'आ',
+    color1: '#d84a1d',
+    color2:'#f7dbd2'
+  },
+  {
+    id: 5,
+    language: 'Telugu - తెలుగు',
+    letter: 'లే',
+    color1: '#f4c01e',
+    color2:'#fdf2d2'
+  }, 
+  {
+    id: 6, 
+    language: 'Tamil - தமிழ்', 
+    letter: 'அ',
+    color1: '#38b6c7',
+    color2: '#d7f0f4'
+  },
+  {
+    id: 7,
+    language: 'Malayalam - മലയാളം',
+    letter: 'എ',
+    color1: '#7a4b4b',
+    color2: '#e4dbdb'
+  },
+  {
+    id: 8,
+    language: 'Gujarati - ગુજરાતી',
+    letter: 'અ',
+    color1: '#8b1ef4',
+    color2: '#e8d2fd'
+  }
+]
+
+export const cities = [ 
+  {
+    city: 'Mumbai',
+    source:'https://in.bmscdn.com/m6/images/common-modules/regions/mumbai.png'
+  },
+  {
+    city: 'Delhi',
+    source: 'https://in.bmscdn.com/m6/images/common-modules/regions/ncr.png'
+  }, 
+  {
+    city: 'Bengaluru',
+    source: 'https://in.bmscdn.com/m6/images/common-modules/regions/bang.png'
+  },
+  {
+    city: 'Hyderabad',
+    source: 'https://in.bmscdn.com/m6/images/common-modules/regions/hyd.png'
+  },
+  {
+    city: 'Ahmedabad',
+    source: 'https://in.bmscdn.com/m6/images/common-modules/regions/ahd.png'
+  },
+  {
+    city: 'Chandigarh',
+    source: 'https://in.bmscdn.com/m6/images/common-modules/regions/chd.png'
+  },
+  {
+    city: 'Chennai',
+    source: 'https://in.bmscdn.com/m6/images/common-modules/regions/chen.png'
+  },
+  {
+    city: 'Surat',
+    source: 'https://in.bmscdn.com/m6/images/common-modules/regions/pune.png'
+  },
+  {
+    city: 'Kolkata',
+    source: 'https://in.bmscdn.com/m6/images/common-modules/regions/kolk.png'
+  }, 
+  {
+    city: 'Kochi',
+    source: 'https://in.bmscdn.com/m6/images/common-modules/regions/koch.png'
+  }
 ]
 
 export const moviegenres = [
@@ -18,12 +105,8 @@ export const moviegenres = [
   'Hindi',
   'Gujarati',
   'English',
-  'Telugu',
-  'Drama',
-  'Action',
-  'Thriller',
-  'Comedy',
-  'Crime'
+  'Tamil',
+  'Telugu'
 ]
 
 export const popularcinemas = [
@@ -35,39 +118,6 @@ export const popularcinemas = [
   "PVP Movies, Kalawad Road",
   "Sudarshan, Rajkumar Road"
 ]
-
-export const dates = [
-  {
-    day: "Mon",
-    dat: 18,
-    mon: "Mar",
-  },
-  {
-    day: "Tue",
-    dat: 19,
-    mon: "Mar",
-  },
-  {
-    day: "Wed",
-    dat: 20,
-    mon: "Mar",
-  },
-  {
-    day: "Thu",
-    dat: 21,
-    mon: "Mar",
-  },
-  {
-    day: "Fri",
-    dat: 22,
-    mon: "Mar",
-  },
-  {
-    day: "Sat",
-    dat: 23,
-    mon: "Mar",
-  },
-];
 
 export const Seats = [
   "G1",

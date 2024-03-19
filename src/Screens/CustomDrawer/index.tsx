@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Image, FlatList, StatusBar } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Image, FlatList, } from 'react-native'
 import React, { useState } from 'react'
 import { DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer'
 import { DrawerActions, NavigationProp, useNavigation } from '@react-navigation/native';
@@ -7,7 +7,10 @@ import profile from '../../../img/profile.png'
 import help from '../../../img/help.png'
 import faq from '../../../img/faq.png'
 import logout from '../../../img/logout.png'
-import reviews from '../../../img/reviews.png'
+import star from '../../../img/star.png'
+import Model from '../Model';
+import { useDispatch } from 'react-redux';
+import { visibleAction } from '../../Redux/actions';
 
 const { width } = Dimensions.get('window');
 
@@ -16,7 +19,7 @@ const listArray = [
     { icon: profile, title: 'Profile' },
     { icon: help, title: 'Help' },
     { icon: faq, title: 'FAQ' },
-    { icon: reviews, title: 'Reviews' },
+    { icon: star, title: 'Reviews' },
 ]
 
 const listArray1 = [
@@ -28,10 +31,12 @@ const CustomDrawer = (props: any) => {
     const navigation = useNavigation<StackNavigationProp<{ route: {} }>>();
 
     const [isClicked, setisClicked] = useState('Home');
+    //const [modelvisible, setmodelvisible] = useState(false);
+    const dispatch = useDispatch();
 
     const Item = ({ title, icon }: any) => (
-        <View >
-            <TouchableOpacity style={{ ...styles.item, backgroundColor: (title === isClicked) ? 'pink' : 'white' }} onPress={() => {
+        <View>
+            <TouchableOpacity style={{ ...styles.item, backgroundColor: (title === isClicked) ? '#F6F6F6' : 'white' }} onPress={() => {
                 if (title === "Home") {
                     navigation.dispatch(DrawerActions.jumpTo('Home'))
                     setisClicked('Home');
@@ -48,16 +53,19 @@ const CustomDrawer = (props: any) => {
                     navigation.dispatch(DrawerActions.jumpTo('Reviews'))
                     setisClicked('Reviews')
                 } else {
-                    navigation.replace('Login')
+                    dispatch(visibleAction(true))
+                    navigation.dispatch(DrawerActions.closeDrawer())
                 }
             }}>
-                <Image source={icon} style={{ height: 25, width: 25, marginLeft: '2%' }} tintColor='#ff5492' />
+                <Image source={icon} style={{ height: 20, width: 20, marginLeft: '2%' }} tintColor='#ff5492' />
                 <Text style={styles.title}>{title}</Text>
             </TouchableOpacity>
+
+
         </View>
     );
 
-    const renderItem = ({ item }) =>
+    const renderItem = ({ item }:any) =>
         <Item title={item.title} icon={item.icon} />
 
 
@@ -65,12 +73,12 @@ const CustomDrawer = (props: any) => {
     return (
         <View style={{ flex: 1 }}>
             <View style={{ flex: 0.50 }}>
-                <FlatList
+                <FlatList showsVerticalScrollIndicator={false}
                     data={listArray}
                     renderItem={renderItem} />
             </View>
             <View style={{ flex: 0.50 }}>
-                <FlatList
+                <FlatList showsVerticalScrollIndicator={false}
                     data={listArray1}
                     renderItem={renderItem} />
             </View>
@@ -90,10 +98,10 @@ const styles = StyleSheet.create({
         borderLeftColor: 'transparent',
         borderRightColor: 'transparent',
         borderBottomColor: '#E1E1E1',
-        borderRadius: 15
+        borderRadius: 15, alignItems:'center'
     },
     title: {
-        fontSize: 20,
+        fontSize: 17,
         marginLeft: 30,
         color: 'black',
         //fontWeight:'bold'

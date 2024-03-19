@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, FlatList } from 'react-native'
 import React, { useState } from 'react'
 import Lang from '../../../img/Language.png';
 import { Dimensions } from 'react-native';
@@ -7,6 +7,7 @@ import SelectCity from '../SelectCity';
 import Navigation from '../../Navigation';
 import { Dropdown } from 'react-native-element-dropdown';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { languages } from '../../Utils/Data'
 
 const { height, width } = Dimensions.get('window');
 
@@ -20,23 +21,54 @@ const data = [
 
 const Language = () => {
 
-  const [value, setValue] = useState('');
+  //const [value, setValue] = useState('');
   const [isFocus, setIsFocus] = useState(false);
+  const [sel, setsel] = useState();
+  const [value, setvalue] = useState(false);
 
   const navigation = useNavigation<NavigationProp<any>>();
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
 
-      <View style={styles.container2}>
-        <Image source={Lang} style={styles.innerimage} />
-      </View>
+      <Text style={styles.text}>Select Your Language</Text>
 
-      <View style={styles.container1}>
-        <Text style={styles.text}>Select Your Language</Text>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <FlatList style={{}} columnWrapperStyle={{ alignSelf: 'center', }} numColumns={2} data={languages} renderItem={({ item, index }) => (
+          <View
+            style={{
+              //backgroundColor: 'white',
+              //borderRadius: 10,
+              //borderWidth: 1,
+              //padding: 10,
+              marginBottom: 20,
+              marginHorizontal:10
+            }}>
+            <TouchableOpacity onPress={() => {
+              setsel(index);
+              setvalue(true)
+            }}>
+              <View style={{
+                width: width * 41 /100,
+                borderWidth: sel === index ? 2 : 0,
+                justifyContent: 'flex-start',
+                //flexDirection: 'row',
+                padding: 10,
+                borderRadius: 20,
+                borderColor: sel === index ? item.color1 : '',
+                backgroundColor: item.color2
+              }}>
+                <Text style={{color: item.color1, fontSize:12, fontWeight:'bold'}}>{item.language}</Text>
+                <Text style={{alignSelf:'center', padding:30, fontSize:50, color: item.color1, fontWeight:'bold'}}>{item.letter}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        )} />
 
-        <View style={styles.container}>
-          <Dropdown
+
+        {/* <View style={styles.container}>
+
+          <Dropdown showsVerticalScrollIndicator={false}
             style={[styles.dropdown, isFocus && { borderColor: 'black' }]}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
@@ -57,33 +89,26 @@ const Language = () => {
               setValue(item.value);
               setIsFocus(false);
             }}
-          />
-        </View>
-
-        <TouchableOpacity
+          /> 
+        </View> */}
+      </ScrollView>
+      <View style={{ }}> 
+      <TouchableOpacity
           disabled={!value}
           style={{
-            ...styles.button, 
-            backgroundColor: value ? '#ff5492' : '#E3E3E3' 
+            ...styles.button,
+            backgroundColor: value ? '#ff5492' : '#E3E3E3'
           }}
-          onPress = {() => {navigation.replace('SelectCity')}}>
-        <Text style={{ color: value ? 'white' : 'grey', fontSize: 20, fontWeight: 'bold' }}>Confirm</Text>
-      </TouchableOpacity>
-
+          onPress={() => { navigation.replace('SelectCity') }}>
+          <Text style={{ color: value ? 'white' : 'grey', fontSize: 20, fontWeight: 'bold' }}>Confirm</Text>
+        </TouchableOpacity>
+      </View>
     </View>
-
-    </View >
   )
 }
 
 const styles = StyleSheet.create({
-  container2: {
-    backgroundColor: 'white',
-    display: 'flex',
-    height: '50%',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  },
+
 
   innerimage: {
     alignItems: 'center',
@@ -91,36 +116,31 @@ const styles = StyleSheet.create({
     height: '60%'
   },
 
-  container1: {
-    backgroundColor: 'white',
-    height: '50%',
-    alignItems: 'center',
-  },
 
   text: {
-    marginTop: 50,
-    marginBottom: 20,
-    fontSize: 25,
+    marginVertical: 20,
+    fontSize: 23,
     color: 'black',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    textAlign: 'center'
   },
 
   button: {
     width: (width * 80) / 100,
-    height: 50,
+    //borderWidth:1,
     alignSelf: 'center',
     alignItems: 'center',
     borderRadius: 50,
     padding: 10,
-    marginTop: 20,
+    marginVertical: 20,
     elevation: 10,
   },
 
   container: {
     //backgroundColor: 'white',
     padding: 16,
-    //borderWidth:1,
-    color:'black'
+    borderWidth: 1,
+    color: 'black'
   },
   dropdown: {
     height: 50,

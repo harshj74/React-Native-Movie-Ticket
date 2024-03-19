@@ -10,7 +10,10 @@ import Reviews from '../Reviews';
 const Drawer = createDrawerNavigator();
 const MyDrawer = () => {
     return (
-        <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />}initialRouteName='Home' screenOptions={{headerShown: false}}>
+        <Drawer.Navigator
+            drawerContent={props => <CustomDrawer {...props} />}
+            initialRouteName='Home'
+            screenOptions={{ headerShown: false }}>
             <Drawer.Screen name="Home" component={Home} />
             <Drawer.Screen name="Profile" component={Profile} />
             <Drawer.Screen name="Help" component={Help} />

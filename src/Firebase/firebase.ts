@@ -9,3 +9,13 @@ export const moviesData = () => {
         return arr;
     })
 }
+
+export const cinemasData = () => {
+    return firestore().collection('Cinemas').get().then((res) => {
+        const arr: any[] = []
+        res.forEach((value) => {
+            arr.push(value.data())
+        })
+        return arr;
+    })
+}

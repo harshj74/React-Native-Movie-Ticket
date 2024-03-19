@@ -20,3 +20,18 @@ export const movieAction = (data: any) => {
         data: data
     }
 }
+
+export const cinemaAction = (data: any) => {
+    return {
+        type: actionType.cinema,
+        data: data
+    }
+}
+
+export const visibleAction = (data: any) => {
+    return {
+        type: actionType.visible,
+        data: data
+    }
+}
+

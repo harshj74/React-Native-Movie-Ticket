@@ -1,5 +1,7 @@
 export const actionType = {
     city: 'city',
     seatsArray: 'seatsArray',
-    movie: 'movie'
+    movie: 'movie',
+    cinema: 'cinema',
+    visible: 'visible'
 }
