@@ -4,7 +4,7 @@ import { StatusBar, StyleSheet, Text, View } from 'react-native';
 import SplashScreen from './src/Screens/SplashScreen';
 import Navigation from './src/Navigation/index'
 import { NavigationContainer } from '@react-navigation/native';
-import { Wrapper } from './src/Context/Wrapper';
+//import { Wrapper } from './src/Context/Wrapper';
 import { Provider } from 'react-redux';
 import store from './src/Redux/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';

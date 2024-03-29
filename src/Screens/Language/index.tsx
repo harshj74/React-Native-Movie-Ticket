@@ -92,7 +92,7 @@ const Language = () => {
           /> 
         </View> */}
       </ScrollView>
-      <View style={{ }}> 
+      {/* <View style={{ backgroundColor:'red'}}>  */}
       <TouchableOpacity
           disabled={!value}
           style={{
@@ -102,7 +102,7 @@ const Language = () => {
           onPress={() => { navigation.replace('SelectCity') }}>
           <Text style={{ color: value ? 'white' : 'grey', fontSize: 20, fontWeight: 'bold' }}>Confirm</Text>
         </TouchableOpacity>
-      </View>
+      {/* </View> */}
     </View>
   )
 }

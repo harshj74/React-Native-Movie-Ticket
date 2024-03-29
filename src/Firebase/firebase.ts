@@ -19,3 +19,15 @@ export const cinemasData = () => {
         return arr;
     })
 }
+
+export const ManageTheater = () => {
+    return firestore().collection('ManageTheater').get().then((res) => {
+        const arr: any[] = []
+        res.forEach((value) => {
+            arr.push(value.data())
+        })
+        return arr;
+    })
+}
+
+

@@ -1,19 +1,23 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../Header';
 import logo from '../../../img/logo.png'
 import Star1 from '../../../img/star1.png'
 import Star2 from '../../../img/star2.png'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { DrawerActions, useNavigation } from '@react-navigation/native';
+import firestore, { firebase } from '@react-native-firebase/firestore';
 
 const Reviews = () => {
+
+
 
   const [defaultRating, setDefaultRating] = useState(2);
   const [maxRating, setMaxRating] = useState([1, 2, 3, 4, 5]);
   const [visible, setVisible] = useState(false);
 
   const navigation = useNavigation();
+  const [text, setText] = useState('');
 
   const CustomRatingBar = () => {
     return (
@@ -38,13 +42,41 @@ const Reviews = () => {
     );
   };
 
+  const handleTextChange = (inputText:any) => {
+    // Split the text by new lines
+    const lines = inputText.split('\n');
+
+    // Check if the lines are within the limit
+    if (lines.length <= 3) {
+      setText(inputText);
+    } else {
+      // If the line limit is exceeded, restrict the text to the last valid input
+      // This simply ignores any input beyond the third newline
+      setText(lines.slice(0, 3).join('\n'));
+    }
+  };
+
+  const usr = firebase.auth().currentUser
+  const current = usr?.uid
+
+  const submit = () => {
+    firestore()
+      .collection('Reviews')
+      .add({
+        user: current,
+        starRating: defaultRating,
+        comment: text
+      })
+    setText('')
+    setDefaultRating(2)
+  }
   return (
     <View>
       <Header onPress={() => {
         navigation.dispatch(DrawerActions.openDrawer())
       }} title='Reviews'></Header>
       <KeyboardAwareScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-        <View style={{height:50}} />
+        <View style={{ height: 50 }} />
         <Image style={styles.img} source={logo}></Image>
         <View style={{ height: 50 }} />
         <Text style={styles.text1}>Please Rate The Movie Ticket Booking !</Text>
@@ -53,21 +85,26 @@ const Reviews = () => {
           {defaultRating} / {Math.max.apply(null, maxRating)}
         </Text> */}
         <Text style={styles.text2}>Your Comments and Suggestions help us Improve the service quality better !</Text>
-        <View style={styles.comment}>
-          <TextInput multiline placeholderTextColor='black' placeholder='Enter Your Comment' ></TextInput>
-        </View>
+        <TextInput
+          style={styles.input}
+          multiline
+          onChangeText={handleTextChange}
+          value={text}
+          placeholder="Type here..."
+        />
         <View>
-        <TouchableOpacity
-          onPress={() => {
-            setVisible(true)
-            setTimeout(() => {
-              setVisible(false)
-            }, 2000)
-          }}
+          <TouchableOpacity
+            onPress={() => {
+              // setVisible(true)
+              // setTimeout(() => {
+              //   setVisible(false)
+              // }, 2000)
+              submit();
+            }}
             style={styles.submit}><Text style={styles.submittext}>Submit</Text></TouchableOpacity>
         </View>
-
-        {/* {visible ? <Text style={{ alignSelf: 'center', color: 'red', fontWeight: 'bold' }}>Review Submitted Successfully !</Text> : null} */}
+{/* 
+        {visible ? <Text style={{ alignSelf: 'center', color: 'red', fontWeight: 'bold' }}>Review Submitted Successfully !</Text> : null} */}
       </KeyboardAwareScrollView>
     </View>
   )
@@ -104,7 +141,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom:10
+    marginBottom: 10
   },
   text2: {
     marginTop: 30,
@@ -127,7 +164,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: 'grey',
     paddingLeft: 10,
+    width:350,
     height: 90,
+    color:'red', fontSize:20
   },
   submittext: {
     textAlign: 'center',
@@ -137,9 +176,30 @@ const styles = StyleSheet.create({
   },
   submit: {
     backgroundColor: '#ff5492',
-    margin: 15,
-    marginHorizontal:20,
+    marginTop: 15,
+    marginBottom:75,
+    marginHorizontal: 20,
     padding: 15,
-    borderRadius: 10 
-  }
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
+  },
+  input: {
+    height: 100,
+    //width: '100%',
+    borderColor: 'gray',
+    borderWidth: 1,
+    textAlignVertical: 'top',
+    marginHorizontal: 20, 
+    borderRadius: 10,
+    padding: 10,
+    
+  },
 })

@@ -26,6 +26,8 @@ import Otp from '../Screens/Otp';
 import ForgotPassword from '../Screens/ForgotPassword';
 import CreateNewPassword from '../Screens/CreateNewPassword';
 import PasswordChanged from '../Screens/PasswordChanged';
+import ManageTheater from '../Screens/ManageTheater';
+import Payment from '../Payment';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,16 +36,16 @@ const Navigation = (props: any) => {
     const [val, setval] = useState();
 
     useEffect(() => {
-        moviesData().then((res) => {
-            //console.log(JSON.stringify(res));
-            dispatch(movieAction((res)))
-        })
-
         cinemasData().then((res) => {
             //console.log(JSON.stringify(res));
             dispatch(cinemaAction((res)))
         })
 
+        moviesData().then((res) => {
+            //console.log(JSON.stringify(res));
+            dispatch(movieAction((res)))
+        })
+        
         AsyncStorage.getItem("city").then((value: any) => {
             console.log(value)
             dispatch(cityAction(value))
@@ -148,6 +150,11 @@ const Navigation = (props: any) => {
             <Stack.Screen
                 name="PasswordChanged"
                 component={PasswordChanged}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="ManageTheater"
+                component={ManageTheater}
                 options={{ headerShown: false }}
             />
         </Stack.Navigator>

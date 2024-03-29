@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux'
 const Cinemas = () => {
 
   const cinema: any[] = useSelector((state: any) => state.cinemaReducer.cinema)
-  const [newcinema, setnewcinema] = useState(cinema)
+  const [newcinema, setnewcinema] = useState(cinema);
   const city = useSelector((state: any) => state.cityReducer.city);
   console.log(city);
 
@@ -35,12 +35,12 @@ const Cinemas = () => {
         return res.city === city
       })} renderItem={({ item, index }) => {
         return (
-          <View style={{ backgroundColor: '#F8F8F8', marginHorizontal: 15, borderRadius: 10, padding: 10, marginBottom: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View style={{ flexDirection: 'row', flexShrink:1, }}>
-              <View style={{ backgroundColor: '#E9E9E9', padding: 10, borderRadius: 20, alignSelf: 'flex-start' }}>
-                <Image style={{ width: 50, height: 50, borderRadius: 10, objectFit: 'fill' }} source={{uri:item.img}}></Image>
+          <View style={styles.mainview}>
+            <View style={{ flexDirection: 'row',}}>
+              <View style={{ backgroundColor: '#E9E9E9', padding: 10, borderRadius: 20, alignSelf: 'flex-start', }}>
+                <Image style={{ width: 50, height: 50, borderRadius: 10, objectFit: 'contain' }} source={{uri:item.img}}></Image>
               </View>
-              <View style={{ marginLeft: 10, }}>
+              <View style={{ marginHorizontal:5, width:'75%'}}>
                 <Text  style={styles.titletext}>{item.title}</Text>
                 <Text style={{ marginBottom: 10 }}>{item.can}</Text>
                 <View style={{ flexDirection: 'row' }}>
@@ -59,9 +59,9 @@ const Cinemas = () => {
                 </View>
               </View>
             </View>
-            <TouchableOpacity style={{ alignSelf: 'flex-start', borderWidth: 1, borderColor:'transparent', marginLeft: 50 }}>
+            {/* <TouchableOpacity style={{ alignSelf: 'flex-start', borderWidth: 1, borderColor:'transparent', marginLeft: 50 }}>
             <Image style={{ width: 15, height: 15, marginVertical: 12,  }} source={right}></Image>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>)
       }} />
     </View>
@@ -71,6 +71,25 @@ const Cinemas = () => {
 export default Cinemas
 
 const styles = StyleSheet.create({
+  mainview: {
+    backgroundColor: '#F8F8F8',
+    marginHorizontal: 15,
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between', 
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
+  },
+
   container: {
     backgroundColor: 'white',
     display: 'flex',
@@ -128,5 +147,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 10,
     marginTop: 5,
+    paddingRight:20,
   }
 })

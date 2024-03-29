@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, ScrollView, ImageBackground, Modal, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import { View, Text, StyleSheet, Image, ScrollView, ImageBackground, Modal, TouchableOpacity, TouchableWithoutFeedback, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { DrawerActions, NavigationProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
@@ -12,13 +12,14 @@ import firestore, { firebase } from '@react-native-firebase/firestore'
 import { useDispatch, useSelector } from 'react-redux';
 import FastImage from 'react-native-fast-image';
 import Model from '../Model';
-import { visibleAction } from '../../Redux/actions';
+import { managetheaterAction, visibleAction } from '../../Redux/actions';
 import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import LottieView from 'lottie-react-native';
+import { ManageTheater } from '../../Firebase/firebase';
 
 const Home = () => {
-  
+
   const navigation = useNavigation();
   const movie: any[] = useSelector((state: any) => state.movieReducer.movie)
   const [newmovie, setnewmovie] = useState(movie)
@@ -30,6 +31,16 @@ const Home = () => {
   const [data, setdata] = useState<any>({})
   const dispatch = useDispatch();
   const modvisible = useSelector((state: any) => state.visibleReducer.visible);
+  const [loading, setLoading] = useState(true);
+
+  const city = useSelector((state: any) => state.cityReducer.city);
+
+  useEffect(() => {
+    if (movie) {
+      setnewmovie(movie)
+      setLoading(false);
+    }
+  }, [movie])
 
   // useEffect(() => {
   //   for (let index = 0; index < recommended.length; index++) {
@@ -37,125 +48,151 @@ const Home = () => {
   //   }
   // },[])
   //console.log(lang);
+
   return (
 
     <View style={styles.container}>
       <Header onPress={() => {
-        navigation.dispatch(DrawerActions.openDrawer())
+        navigation.dispatch(DrawerActions.openDrawer());
       }} image title='Home'></Header>
-      <View style={{ flex: 1 }}>
 
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <FlatList
-            style={{ marginVertical: 5, marginBottom: 20, }}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            data={moviegenres}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-                style={{
-                  borderColor: isSelected == index ? '#ff5492' : 'grey',
-                  height: 40,
-                  backgroundColor: 'white',
-                  marginHorizontal: 10,
-                  marginVertical: 5,
-                  alignItems: "center",
-                  justifyContent: 'center',
-                  borderRadius: 20,
-                  paddingHorizontal: 20,
-                  borderWidth: isSelected == index ? 3 : 1,
-                }} onPress={() => {
-                  setIsSelected(index);
-                  setIsClicked(false);
-                  setlang(item)
-                  const arr = [...movie]
-                  const newArr = []
-                  for (let i = 0; i < arr.length; i++) {
-                    if (arr[i].language.includes(item)) {
-                      newArr.push(arr[i])
+      {newmovie.length > 0 ?
+        <View style={{ flex: 1 }}>
+
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <FlatList
+              style={{ marginVertical: 5, marginBottom: 20, }}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={moviegenres}
+              renderItem={({ item, index }) => (
+                <TouchableOpacity
+                  style={{
+                    borderColor: isSelected == index ? '#ff5492' : 'white',
+                    height: 40,
+                    backgroundColor: 'white',
+                    marginHorizontal: 10,
+                    marginVertical: 5,
+                    alignItems: "center",
+                    justifyContent: 'center',
+                    borderRadius: 20,
+                    paddingHorizontal: 20,
+                    borderWidth: isSelected == index ? 3 : 1,
+                    shadowColor: "#000",
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.23,
+                    shadowRadius: 2.62,
+
+                    elevation: 4,
+                  }} onPress={() => {
+                    setIsSelected(index);
+                    setIsClicked(false);
+                    setlang(item)
+                    const arr = [...movie]
+                    const newArr = []
+                    for (let i = 0; i < arr.length; i++) {
+                      if (arr[i].language.includes(item)) {
+                        newArr.push(arr[i])
+                      }
                     }
-                  }
-                  if (item === "All") {
-                    setnewmovie(arr)
-                  }
-                  else {
-                    setnewmovie(newArr)
-                  }
-                }}>
-                <Text style={{
-                  //fontWeight: isSelected == index ? 'bold' : '400',
-                  color: isSelected == index ? '#ff5492' : 'black',
-                  fontSize: 16
-                }}>{item}</Text>
-              </TouchableOpacity>
-            )} />
-
-
-
-
-
-
-
-
-
-
-
-
-          <Text style={styles.text}>Recommended Movies</Text>
-
-          <Modal transparent
-            visible={modalVisible}
-            animationType='fade'>
-            <View style={styles.centeredView}>
-              <TouchableWithoutFeedback onPress={() => setModalVisible(!modalVisible)}>
-                <View style={styles.overlay} />
-              </TouchableWithoutFeedback>
-              <View style={styles.modalView}>
-                <Image style={styles.recommendedimage1} source={{ uri: data?.img }} />
-                <View style={styles.modelmaintextview}>
-                  <Text style={styles.title}>{data?.title}</Text>
-                  <Text style={styles.type}>{data?.type}</Text>
-                  <Text style={styles.time}>{data?.time}</Text>
-                  <View style={{ flexDirection: 'row', gap: 10 }}>
-                    <Text style={styles.modeltext}>{data?.certificate}</Text>
-                    <Text style={styles.modeltext}>{data?.genre}</Text>
-                  </View>
-
-                </View>
-                <View style={styles.bnmodalview}>
-                  <TouchableOpacity onPress={() => {
-                    //console.log(data)
-                    navigation.navigate('Details', { data })
-                    setModalVisible(!modalVisible)
+                    if (item === "All") {
+                      setnewmovie(arr)
+                    }
+                    else {
+                      setnewmovie(newArr)
+                    }
                   }}>
-                    <Text style={styles.booknowmodal}>Book Now</Text>
-                  </TouchableOpacity>
+                  <Text style={{
+                    //fontWeight: isSelected == index ? 'bold' : '400',
+                    color: isSelected == index ? '#ff5492' : 'black',
+                    fontSize: 16
+                  }}>{item}</Text>
+                </TouchableOpacity>
+              )} />
+
+
+
+
+            <Text style={styles.text}>Recommended Movies</Text>
+
+            <Modal transparent
+              visible={modalVisible}
+              animationType='fade'>
+              <View style={styles.centeredView}>
+                <TouchableWithoutFeedback onPress={() => setModalVisible(!modalVisible)}>
+                  <View style={styles.overlay} />
+                </TouchableWithoutFeedback>
+                <View style={styles.modalView}>
+
+                  <FastImage style={styles.recommendedimage1} source={{ uri: data?.img }} />
+                  <View style={styles.modelmaintextview}>
+                    <Text style={styles.title}>{data?.title}</Text>
+                    <Text style={styles.type}>{data?.type}</Text>
+                    <Text style={styles.time}>{data?.time}</Text>
+                    <View style={{ flexDirection: 'row', gap: 10 }}>
+                      <Text style={styles.modeltext}>{data?.certificate}</Text>
+                      <Text style={styles.modeltext}>{data?.genre}</Text>
+                    </View>
+
+                  </View>
+                  <View style={styles.bnmodalview}>
+                    <TouchableOpacity onPress={async () => {
+                      //console.log(data)
+                      await ManageTheater().then((res) => {
+
+                        const result = res.filter((obj) => {
+                          //console.log(obj.movieid, data.title,obj.city, city, )
+
+                          return obj.movieid === data.title && obj.city === city
+                        })
+                        console.log(result);
+                        dispatch(managetheaterAction(result))
+                      })
+                      navigation.navigate('Details', { data })
+                      setModalVisible(!modalVisible)
+                    }}>
+                      <Text style={styles.booknowmodal}>Book Now</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
-            </View>
-          </Modal>
+            </Modal>
 
 
-          <FlatList
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            data={newmovie.filter((res) => {
-              return res.movietype === "recommended"
-            })}
-            renderItem={({ item, index }) => {
-              //console.log("tesing : ",item);
-              return (
-                
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={newmovie.filter((res) => {
+                return res.movietype === "recommended"
+              })}
+              renderItem={({ item, index }) => {
+                //console.log("tesing : ",item);
+                return (
+
                   <View
                     style={{
                       backgroundColor: 'white',
                       borderRadius: 10,
                       //borderWidth: 1,
-                      padding: 10,
+                      margin: 10,
                       marginBottom: 20,
+
                     }}
                   >
-                    <TouchableOpacity activeOpacity={0.5} onPress={() => {
+                    <TouchableOpacity style={{
+                      shadowColor: "#000",
+                      shadowOffset: {
+                        width: 0,
+                        height: 2,
+                      },
+                      shadowOpacity: 0.23,
+                      shadowRadius: 2.62,
+
+                      elevation: 4,
+                    }} activeOpacity={0.5} onPress={() => {
                       setModalVisible(!modalVisible)
                       setdata(item)
                     }}>
@@ -167,10 +204,10 @@ const Home = () => {
                       </View>
                     </TouchableOpacity>
                   </View>
-                
-              )
-            }
-            } />
+
+                )
+              }
+              } />
 
 
 
@@ -179,183 +216,214 @@ const Home = () => {
 
 
 
-          <Text style={styles.text}>Now Showing</Text>
+            <Text style={styles.text}>Now Showing</Text>
 
-          <FlatList
-            numColumns={1}
-            data={newmovie.filter((res) => {
-              return res.movietype === "nowshowing"
-            })}
-            renderItem={({ item, index }) => (
-              <View
-                style={{
-                  flex: 1,
-                  padding: 10,
-                  //backgroundColor: 'white',
-                  borderRadius: 10,
-                  marginBottom: 20,
-                }}>
-                <View>
+            <FlatList
+              numColumns={1}
+              data={newmovie.filter((res) => {
+                return res.movietype === "nowshowing"
+              })}
+              renderItem={({ item, index }) => (
+                <View
+                  style={{
+                    flex: 1,
+                    padding: 10,
+                    //backgroundColor: 'white',
+                    borderRadius: 10,
+                    marginBottom: 20,
+                  }}>
+                  <View style={{
+                    borderRadius: 15,
+                    shadowColor: "#000",
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
 
-                  <FastImage style={styles.nowshowingimage} source={{ uri: item.img }} />
-
-                </View>
-                <View style={styles.ratingview1}>
-                  <Image style={{ height: 18, width: 18, }} source={like} />
-                  <Text style={styles.recommendedmovietext}>{item.likes} Likes</Text>
-                  <Text>                   </Text>
-                  <Image style={{ height: 18, width: 18, tintColor: 'red' }} source={favourite} />
-                  <Text style={styles.recommendedmovietext}>{item.fav}%</Text>
-                </View>
-                <View style={styles.nslast} >
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text style={styles.nstext}>{item.title}</Text>
-                    <View style={{ backgroundColor: '#ff5492', position: 'absolute', right: 0, borderRadius: 7 }}>
-                      <TouchableOpacity onPress={() => {
-                        //console.log(item)
-                        navigation.navigate('Details', { data: item })
-                        //setModalVisible(!modalVisible)
-                      }}><Text style={{ fontSize: 15, fontWeight: 'bold', color: 'white', padding: 10, marginHorizontal: 10 }}>Book Now</Text></TouchableOpacity>
+                    elevation: 5,
+                  }}>
+                    <View>
+                      <FastImage style={styles.nowshowingimage} source={{ uri: item.img }} />
                     </View>
+                    <View style={styles.ratingview1}>
+                      <Image style={{ height: 18, width: 18, }} source={like} />
+                      <Text style={styles.recommendedmovietext}>{item.likes} Likes</Text>
+                      <Text>                   </Text>
+                      <Image style={{ height: 18, width: 18, tintColor: 'red' }} source={favourite} />
+                      <Text style={styles.recommendedmovietext}>{item.fav}%</Text>
+                    </View>
+                    <View style={styles.nslast} >
+                      <View style={{ flexDirection: 'row' }}>
+                        <Text style={styles.nstext}>{item.title}</Text>
+                        <View style={{ backgroundColor: '#ff5492', position: 'absolute', right: 0, borderRadius: 7 }}>
+                          <TouchableOpacity onPress={() => {
+                            //console.log(item)
+                            navigation.navigate('Details', { data: item })
+                            //setModalVisible(!modalVisible)
+                          }}><Text style={{ fontSize: 15, fontWeight: 'bold', color: 'white', padding: 10, marginHorizontal: 10 }}>Book Now</Text></TouchableOpacity>
+                        </View>
 
-                  </View>
+                      </View>
 
-                  <View style={{ flexDirection: 'row', gap: 10, paddingTop: 8, paddingBottom: 8 }}>
-                    <Text style={styles.commingsoontext}>{item.certificate}</Text>
-                    <Text style={styles.commingsoontext}>{item.genre}</Text>
-                  </View>
-                  <View>
-                    <Text style={styles.commingsoontextlast}>{item.type}</Text>
-                  </View>
-                </View>
-
-              </View>
-            )} />
-
-
-
-
-
-
-
-
-
-
-          <Text style={styles.text}>Popular Cinemas</Text>
-
-          <FlatList
-            style={{ marginVertical: 5, marginBottom: 20, }}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            data={popularcinemas}
-            renderItem={({ item, index }) => (
-              <View
-                style={{
-                  borderColor: 'grey',
-                  height: 40,
-                  backgroundColor: 'white',
-                  marginHorizontal: 10,
-                  marginVertical: 5,
-                  alignItems: "center",
-                  justifyContent: 'center',
-                  borderRadius: 20,
-                  paddingHorizontal: 20,
-                  borderWidth: 1,
-                }}>
-                <Text style={{
-                  color: 'black',
-                  fontSize: 16
-                }}>{item}</Text>
-              </View>
-            )} />
-
-
-
-
-
-
-
-
-
-
-
-
-          <Text style={styles.text}>Comming soon</Text>
-
-          <FlatList
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            data={newmovie.filter((res) => {
-              return res.movietype === "upcoming"
-            })}
-            renderItem={({ item, index }) => (
-              <View
-                style={{
-                  backgroundColor: 'white',
-                  borderRadius: 10,
-                  //borderWidth: 1,
-                  margin: 10,
-                  // marginBottom: 20
-                }}
-              >
-                <View style={{ borderRadius: 10 }}>
-                  <FastImage style={styles.commingsoonimage} source={{ uri: item.img }} />
-                  <View style={styles.likeview}>
-                    <Image style={{ height: 23, width: 23, tintColor: 'red' }} source={favourite} />
-                    <Text style={{ fontSize: 13, color: 'black', fontWeight: 'bold' }}>{item.fav}%</Text>
+                      <View style={{ flexDirection: 'row', gap: 10, paddingTop: 8, paddingBottom: 8 }}>
+                        <Text style={styles.commingsoontext}>{item.certificate}</Text>
+                        <Text style={styles.commingsoontext}>{item.genre}</Text>
+                      </View>
+                      <View>
+                        <Text style={styles.commingsoontextlast}>{item.type}</Text>
+                      </View>
+                    </View>
                   </View>
                 </View>
-                <View style={styles.cssecondview}>
-                  <Text style={styles.commingsoontext}>{item.title}</Text>
-                  <View style={{ flexDirection: 'row', gap: 10, paddingTop: 8, paddingBottom: 8 }}>
-                    <Text style={styles.commingsoontext}>{item.certificate}</Text>
-                    <Text style={styles.commingsoontext}>{item.genre}</Text>
+              )} />
+
+
+
+
+
+
+
+
+
+
+            <Text style={styles.text}>Popular Cinemas</Text>
+
+            <FlatList
+              style={{ marginVertical: 5, marginBottom: 20, }}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={popularcinemas}
+              renderItem={({ item, index }) => (
+                <View
+                  style={{
+                    borderColor: '#F8F8F8',
+                    height: 40,
+                    backgroundColor: 'white',
+                    marginHorizontal: 10,
+                    marginVertical: 5,
+                    alignItems: "center",
+                    justifyContent: 'center',
+                    borderRadius: 20,
+                    paddingHorizontal: 20,
+                    borderWidth: 1,
+                    shadowColor: "#000",
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.23,
+                    shadowRadius: 2.62,
+
+                    elevation: 4,
+                  }}>
+                  <Text style={{
+                    color: 'black',
+                    fontSize: 16
+                  }}>{item}</Text>
+                </View>
+              )} />
+
+
+
+
+
+
+
+
+
+
+
+
+            <Text style={styles.text}>Comming soon</Text>
+
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={newmovie.filter((res) => {
+                return res.movietype === "upcoming"
+              })}
+              renderItem={({ item, index }) => (
+                <View
+                  style={{
+                    backgroundColor: 'white',
+                    borderRadius: 10,
+                    //borderWidth: 1,
+                    margin: 10,
+                    // marginBottom: 20,
+                    shadowColor: "#000",
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.23,
+                    shadowRadius: 2.62,
+
+                    elevation: 4,
+                  }}
+                >
+                  <View style={{ borderRadius: 10 }}>
+                    <FastImage style={styles.commingsoonimage} source={{ uri: item.img }} />
+                    <View style={styles.likeview}>
+                      <Image style={{ height: 23, width: 23, tintColor: 'red' }} source={favourite} />
+                      <Text style={{ fontSize: 13, color: 'black', fontWeight: 'bold' }}>{item.fav}%</Text>
+                    </View>
                   </View>
-                  <View>
-                    <Text style={styles.commingsoontextlast}>{item.type}</Text>
+                  <View style={styles.cssecondview}>
+                    <Text style={styles.commingsoontext}>{item.title}</Text>
+                    <View style={{ flexDirection: 'row', gap: 10, paddingTop: 8, paddingBottom: 8 }}>
+                      <Text style={styles.commingsoontext}>{item.certificate}</Text>
+                      <Text style={styles.commingsoontext}>{item.genre}</Text>
+                    </View>
+                    <View>
+                      <Text style={styles.commingsoontextlast}>{item.type}</Text>
+                    </View>
                   </View>
                 </View>
+              )} />
+
+
+            <Model
+              pressOut={() => { }}
+              visible={modvisible}>
+              <View>
+                <TouchableOpacity
+                  style={{ alignSelf: 'flex-end' }}
+                  onPress={() => { dispatch(visibleAction(false)) }}>
+                  <Image
+                    source={Close}
+                    style={{ height: 18, width: 18 }} />
+                </TouchableOpacity>
+                <Text style={styles.modeltext1}>Are You Sure You Want To Sign Out ?</Text>
               </View>
-            )} />
-          
 
-          <Model
-            pressOut={() => { }}
-            visible={modvisible}>
-            <View>
-              <TouchableOpacity
-                style={{ alignSelf: 'flex-end' }}
-                onPress={() => { dispatch(visibleAction(false)) } }>
-                <Image
-                  source={Close}
-                  style={{ height: 18, width: 18 }} />
-              </TouchableOpacity>
-              <Text style={styles.modeltext1}>Are You Sure You Want To Sign Out ?</Text>
-            </View>
+              <View style={{ flexDirection: 'row', marginTop: 20 }}>
+                <TouchableOpacity
+                  style={styles.ok}
+                  onPress={() => {
+                    AsyncStorage.setItem('loggedin', '');
+                    auth()
+                      .signOut()
+                      .then(() => console.log('User signed out!'));
+                    navigation.replace('Login');
+                    dispatch(visibleAction(false))
+                  }}>
+                  <Text style={styles.oktext}>Logout</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.cancel}
+                  onPress={() => { dispatch(visibleAction(false)) }}>
+                  <Text style={styles.canceltext}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </Model>
 
-            <View style={{ flexDirection: 'row', marginTop: 20 }}>
-              <TouchableOpacity
-                style={styles.ok}
-                onPress={() => {
-                  AsyncStorage.setItem('loggedin', '');
-                  auth()
-                    .signOut()
-                    .then(() => console.log('User signed out!'));
-                  navigation.replace('Login');
-                  dispatch(visibleAction(false))
-                }}>
-                <Text style={styles.oktext}>Logout</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.cancel}
-                onPress={() => { dispatch(visibleAction(false)) } }>
-                <Text style={styles.canceltext}>Cancel</Text>
-              </TouchableOpacity>
-            </View>
-          </Model>
-
-        </ScrollView>
-      </View>
+          </ScrollView>
+        </View> : <View style={{ flex: 1, justifyContent: "center" }}>
+          <ActivityIndicator size="large" color='#ff5492' animating={true} />
+          {/* <LottieView style={{flex:1}} source={require('../../../LottieFiles/loader.json')} autoPlay loop /> */}
+        </View>}
     </View >
   )
 };
@@ -366,6 +434,11 @@ const Home = () => {
 
 
 const styles = StyleSheet.create({
+  newcontainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+
   type: {
     backgroundColor: 'black',
     color: 'white',
@@ -445,7 +518,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10,
     borderBottomLeftRadius: 10,
     backgroundColor: 'white',
-    borderColor: "grey",
+    borderColor: "white",
     padding: 10,
   },
 
@@ -512,7 +585,7 @@ const styles = StyleSheet.create({
 
   cssecondview: {
     backgroundColor: 'white',
-    borderColor: "grey",
+    borderColor: "white",
     padding: 10,
     borderBottomRightRadius: 10,
     borderBottomLeftRadius: 10,

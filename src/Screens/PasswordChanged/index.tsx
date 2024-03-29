@@ -1,6 +1,5 @@
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native'
 import React from 'react'
-import LottieView from 'lottie-react-native';
 import { useNavigation } from '@react-navigation/native';
 const { height, width } = Dimensions.get('window');
 

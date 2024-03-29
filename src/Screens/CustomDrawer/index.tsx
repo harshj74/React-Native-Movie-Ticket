@@ -20,12 +20,9 @@ const listArray = [
     { icon: help, title: 'Help' },
     { icon: faq, title: 'FAQ' },
     { icon: star, title: 'Reviews' },
-]
-
-const listArray1 = [
     { icon: logout, title: 'Logout' },
-
 ]
+
 const CustomDrawer = (props: any) => {
 
     const navigation = useNavigation<StackNavigationProp<{ route: {} }>>();
@@ -36,7 +33,7 @@ const CustomDrawer = (props: any) => {
 
     const Item = ({ title, icon }: any) => (
         <View>
-            <TouchableOpacity style={{ ...styles.item, backgroundColor: (title === isClicked) ? '#F6F6F6' : 'white' }} onPress={() => {
+            <TouchableOpacity style={{ ...styles.item, backgroundColor: (title === isClicked) ? '#FFF5EE' : 'white' }} onPress={() => {
                 if (title === "Home") {
                     navigation.dispatch(DrawerActions.jumpTo('Home'))
                     setisClicked('Home');
@@ -68,37 +65,29 @@ const CustomDrawer = (props: any) => {
     const renderItem = ({ item }:any) =>
         <Item title={item.title} icon={item.icon} />
 
-
     // const navigation = useNavigation<NavigationProp<any>>();
     return (
-        <View style={{ flex: 1 }}>
-            <View style={{ flex: 0.50 }}>
-                <FlatList showsVerticalScrollIndicator={false}
+           <>
+                <FlatList style={{borderWidth:1}} showsVerticalScrollIndicator={false}
                     data={listArray}
                     renderItem={renderItem} />
-            </View>
-            <View style={{ flex: 0.50 }}>
-                <FlatList showsVerticalScrollIndicator={false}
-                    data={listArray1}
-                    renderItem={renderItem} />
-            </View>
-        </View>
+            
+            
+        </>
     )
 }
 
 const styles = StyleSheet.create({
     item: {
         marginTop: 20,
+        marginBottom:6,
         paddingVertical: 10,
-        marginVertical: 0,
+        paddingHorizontal:10,
         marginHorizontal: 15,
         flexDirection: 'row',
-        borderWidth: 1,
-        borderTopColor: 'transparent',
-        borderLeftColor: 'transparent',
-        borderRightColor: 'transparent',
-        borderBottomColor: '#E1E1E1',
-        borderRadius: 15, alignItems:'center'
+        //borderWidth: 1,
+        borderRadius: 15,
+        alignItems: 'center',
     },
     title: {
         fontSize: 17,

@@ -1,18 +1,48 @@
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useContext, useState } from 'react'
+import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import back from '../../../img/back.png'
 import Screen from '../../../img/screen.png'
+import logo from '../../../img/logo.png'
 import { Seats } from '../../Utils/Data'
 import Availability from '../Availability'
 //import { MallSeats } from '../../Context/Wrapper'
 import { useDispatch, useSelector } from 'react-redux'
 import { seatsArrayAction } from '../../Redux/actions'
+import RazorpayCheckout from 'react-native-razorpay';
 
-const Theaters = ({ route }) => {
+const Theaters = ({ route }: any) => {
 
-  const { title, mall, time } = route.params;
-  const { date } = route.params;
+  const openCheckout = () => {
+    var options = {
+      description: 'Credits towards Ticket Booking',
+      //image: 'https://i.imgur.com/3g7nmJC.png',
+      currency: 'INR',
+      key: 'rzp_test_1DP5mmOlF5G5ag', // Your api key
+      amount: (amount * 100),
+      name: 'Movie Ticket',
+      prefill: {
+        email: 'void@razorpay.com',
+        contact: '9191919191',
+        name: 'Razorpay Software',
+      },
+      theme: { color: '#ff5492' },
+    };
+    RazorpayCheckout.open(options)
+      .then(data => {
+        // handle success
+        //Alert.alert(`Success: ${data.razorpay_payment_id}`);
+        navigation.navigate('BottomTab')
+      })
+      .catch(error => {
+        // handle failure
+        Alert.alert(`Error: ${error.code} | ${error.description}`);
+      });
+  };
+  
+  const { title } = route.params; 
+  //const { title, mall, time } = route.params;
+  //const { date } = route.params;
   //const { seatsArray, setseatsArray } = useContext(MallSeats);
   const dispatch = useDispatch();
   const seatsArray = useSelector((state: any) => state.seatsArrayReducer.seatsArray);
@@ -40,7 +70,7 @@ const Theaters = ({ route }) => {
         </View>
       </View>
 
-      <Text style={styles.toptext}>{mall} | {date.dat} {date.mon} | {date.day} | {time}</Text>
+      {/* <Text style={styles.toptext}>{mall} | {date.dat} {date.mon} | {date.day} | {time}</Text> */}
 
       <View style={{ marginVertical: 10, }}>
         <Image resizeMode='contain' style={{ width: '90%', alignSelf: 'center', tintColor: 'pink' }} source={Screen} />
@@ -93,7 +123,8 @@ const Theaters = ({ route }) => {
       <TouchableOpacity
         disabled={seatsArray.length === 0}
         onPress={() => {
-          console.log("Clicked")
+          //console.log("Clicked")
+          openCheckout()
         }}
         activeOpacity={0.9}
         style={styles.btn}>

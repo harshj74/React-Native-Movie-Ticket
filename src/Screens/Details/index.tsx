@@ -1,15 +1,39 @@
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Alert, TextInput } from 'react-native'
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Alert, TextInput, Dimensions } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import back from '../../../img/back.png'
 import info from '../../../img/help.png'
-import { Theaters, dates } from '../../Utils/Data'
+import { Theaters, time } from '../../Utils/Data'
 import { useNavigation } from '@react-navigation/native'
 import YoutubePlayer from "react-native-youtube-iframe";
 import search from '../../../img/search.png'
 import loc from '../../../img/loc.png'
 import play from '../../../img/play.png'
+import { useSelector } from 'react-redux'
+import { cinemasData } from '../../Firebase/firebase'
+import firestore from '@react-native-firebase/firestore'
+const { height, width } = Dimensions.get('window');
 
-const Details = ({ route }) => {
+const Details = ({ route }: any) => {
+
+    const ManageTheater: any[] = useSelector((state: any) => state.managetheaterReducer.managetheater)
+    //console.log(ManageTheater);
+    const [arrData, setArrData] = useState<any[]>([])
+    const arr: any[] = []
+    useEffect(() => {
+        ManageTheater.filter((obj) => {
+            cinemasData().then((res: any) => {
+                res.filter((data: any) => {
+                    if (obj.cinemaid === data.title) {
+                        //console.log(typeof(arr));
+                        arr.push(data)
+                        setArrData(arr)
+                    }
+                })
+
+            })
+        })
+    }, [])
+
 
     const [selected, setselected] = useState(true);
     const [date, setdate] = useState();
@@ -73,8 +97,9 @@ const Details = ({ route }) => {
         {
             day: today6.toLocaleString('en-US', { weekday: 'short' }),
             dat: today6.getDate()
-        }        
+        }
     ]
+
 
     const onStateChange = useCallback((state: string) => {
         if (state === "ended") {
@@ -109,25 +134,27 @@ const Details = ({ route }) => {
 
             </View>
 
-            {/* <Image resizeMode='stretch' style={{ height: '23%', width: '100%', marginBottom: 15, zIndex: 1 }} source={{ uri: imglandscape ?? img }} /> */}
+            {/* <Image resizeMode='stretch' style={{ height: '50%', width: '100%', marginBottom: 15, zIndex: 1 }} source={{ uri: imglandscape ?? img }} /> */}
 
-            {/* <View style={{ marginTop: '13%', height: "23%", width: "100%", borderWidth: 1, backgroundColor: 'black', position: 'absolute', zIndex: 1, opacity: 0.8 }}>
+            {/* <Image resizeMode='stretch' style={{ height: '50%', width: '100%', marginBottom: 15, zIndex: 1 }} source={{ uri:'https://s3-alpha-sig.figma.com/img/4dc9/8437/3f30971dd5bd5b891b73e653dd5fbdb5?Expires=1711929600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=hrek384vX2ZNTHioFE94p2cZ7xirMKWa7qfhWjRaFuh8K5vT6bpo89UnqIZb3Q8wdUFVHD-sa~3kpclp0vmEgR6XpaFvE5sgeWAEwhM2dF2qzTN2gmxuYJIZxreK75AtQu0V9Ob8452pfEo6NIa4emMpGquZUn9GCVcfgtL2l5LuPtdjaUy18Wgx1RUcxmBdD5bCy5hMFM1Qrm0V4uA21lKtP5Uzs0v6tkazhOzD~88QaO-HU2aGt8RP3tFKeG-2qDYKpJ1Lo570IErB3c5UkGAECkh-0EoI4QfXP34iDIRewtQ4wZDpXDJVZCiJZdf6WBOblO-ktnS2InI8XQbluw__'}} /> */}
+
+            {/* <View style={{ marginTop: '13%', height: "50%", width: "100%", borderWidth: 1, backgroundColor: '#6E3DED', position: 'absolute', zIndex: 1, opacity: 0.19 }}>
                 <TouchableOpacity onPress={togglePlaying}>
                     <Image tintColor="#ff5492" style={styles.play} source={play} />
                 </TouchableOpacity>
-            </View>  */}
+            </View> */}
 
 
             {/* Youtube Tab */}
-            
-                <YoutubePlayer
-                    height={240}
-                    play={playing}
-                    videoId={videoid}
-                    onChangeState={onStateChange}
-                />
 
-            <View style={{ alignItems: 'center',  marginBottom: 15, flexDirection: 'row', marginHorizontal: 20, }}>
+            <YoutubePlayer
+                height={240}
+                play={playing}
+                videoId={videoid}
+                onChangeState={onStateChange}
+            />
+
+            <View style={{ alignItems: 'center', marginBottom: 15, flexDirection: 'row', marginHorizontal: 20, }}>
                 <View style={{ backgroundColor: 'grey', paddingVertical: 19.3, paddingHorizontal: 5, borderRadius: 7 }}>
                     <Text style={{ fontWeight: 'bold', color: 'white', transform: [{ rotate: '270deg' }] }}>{month}</Text>
                 </View>
@@ -153,7 +180,7 @@ const Details = ({ route }) => {
             </View>
 
 
-            <FlatList showsVerticalScrollIndicator={false} style={{ marginHorizontal: 20, }} data={Theaters} renderItem={({ item, index }) => (
+            <FlatList showsVerticalScrollIndicator={false} style={{ marginHorizontal: 20, }} data={arrData} renderItem={({ item, index }) => (
                 <View
                     style={{
                         //height: 160,
@@ -169,39 +196,32 @@ const Details = ({ route }) => {
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                         <View style={{ flexDirection: 'row', gap: 10 }}>
 
-                            <Text style={{ color: 'black', fontSize: 15, fontWeight: '500' }}>{item.name}</Text>
+                            <Text style={{ color: 'black', fontSize: 15, fontWeight: '500' }}>{item?.title}</Text>
                         </View>
-                        <View style={{ flexDirection: 'row', gap: 3, }}>
+                        {/* <View style={{ flexDirection: 'row', gap: 3, }}>
                             <Image style={{ height: 20, width: 20, }} source={loc} />
-                            <Text style={{ color: 'black' }}>{item.distance}</Text>
-                        </View>
+                            <Text style={{ color: 'black' }}>{item?.distance}</Text>
+                        </View> */}
                     </View>
 
                     <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
                         <Image style={{ height: 20, width: 20, }} source={info} />
-                        <Text style={{ fontWeight: '400', fontSize: 12, alignItems: 'center', color: 'black' }}>Non-cancellable</Text>
+                        <Text style={{ fontWeight: '400', fontSize: 12, alignItems: 'center', color: 'black' }}>Non{item?.can}</Text>
                     </View>
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                        {
-                            item.timings.map((value, index) => (
-                                <TouchableOpacity
-                                    disabled={selected}
-                                    onPress={() => {
-                                        //console.log(date)
-                                        navigation.navigate('Theaters', {
-                                            title,
-                                            mall: item.name,
-                                            date,
-                                            time: value
-                                        })
-                                    }}
-                                    activeOpacity={0.2}
-                                    key={index}
-                                    style={styles.time}>
-                                    <Text style={{ fontSize: 13, color: 'green' }}>{value}</Text>
+                        <FlatList contentContainerStyle={{backgroundColor:'pink'}} style={{ flexDirection: 'row' }} data={time} renderItem={({ item, index }) => (
+                            <View style={{ }}>
+                                <TouchableOpacity onPress={() => {
+                                    navigation.navigate('Theaters', { 
+                                        title:title
+                                    })
+                                }} style={{ borderWidth: 2, marginRight: 15, padding: 3, borderRadius: 5, borderColor: 'green' }}>
+                                    <Text style={{ color: 'green', fontSize:13.5 }}>{item}</Text>
                                 </TouchableOpacity>
-                            ))
-                        }
+                            </View>
+                        )
+
+                        } />
                     </View>
                 </View>
             )} />

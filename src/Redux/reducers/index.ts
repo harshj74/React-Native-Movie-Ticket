@@ -4,6 +4,7 @@ import seatsArrayReducer from "./seatsArrayReducer";
 import movieReducer from "./movieReducer";
 import cinemaReducer from "./cinemaReducer";
 import visibleReducer from "./visibleReducer";
+import managetheaterReducer from "./managetheaterReducer";
 
 
 const allReducers = combineReducers({
@@ -11,7 +12,8 @@ const allReducers = combineReducers({
     seatsArrayReducer: seatsArrayReducer,
     movieReducer: movieReducer,
     cinemaReducer: cinemaReducer,
-    visibleReducer: visibleReducer
+    visibleReducer: visibleReducer,
+    managetheaterReducer: managetheaterReducer
 })
 
 export default allReducers

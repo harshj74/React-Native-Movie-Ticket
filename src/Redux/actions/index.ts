@@ -28,6 +28,13 @@ export const cinemaAction = (data: any) => {
     }
 }
 
+export const managetheaterAction = (data: any) => {
+    return {
+        type: actionType.managetheater,
+        data: data
+    }
+}
+
 export const visibleAction = (data: any) => {
     return {
         type: actionType.visible,

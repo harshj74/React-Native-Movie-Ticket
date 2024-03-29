@@ -11,9 +11,13 @@ const Drawer = createDrawerNavigator();
 const MyDrawer = () => {
     return (
         <Drawer.Navigator
+            
             drawerContent={props => <CustomDrawer {...props} />}
             initialRouteName='Home'
-            screenOptions={{ headerShown: false }}>
+            screenOptions={{
+                headerShown: false,
+                drawerStyle: {
+            }}}>
             <Drawer.Screen name="Home" component={Home} />
             <Drawer.Screen name="Profile" component={Profile} />
             <Drawer.Screen name="Help" component={Help} />

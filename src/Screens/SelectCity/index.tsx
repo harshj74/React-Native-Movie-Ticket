@@ -28,7 +28,10 @@ const SelectCity = () => {
 
   return (
     <View style={{
-      ...styles.container, paddingHorizontal: isCity ? 0 : 20, paddingTop: isCity ? 0 : 35, }}>
+      ...styles.container,
+      paddingHorizontal: isCity ? 0 : 20,
+      paddingTop: isCity ? 0 : 35,
+    }}>
       {isCity ? <View style={{}}>
         <Header title='Select City' source={back} onPress={() => {
           AsyncStorage.setItem("login", "on")
@@ -51,7 +54,8 @@ const SelectCity = () => {
               marginBottom: 20,
               paddingHorizontal: 17,
               paddingVertical: 9,
-              borderRadius: 20,
+            borderRadius: 20,
+            backgroundColor: isSelected == index ? '#FFF5EE' : 'white'
             }}
             onPress={() => {
               console.log(item.city);
@@ -68,12 +72,12 @@ const SelectCity = () => {
             //flexDirection: 'row',
             padding: 10,
             borderRadius: 20,
-            alignItems:'center',
+            alignItems: 'center',
             //borderColor: sel === index ? item.color1 : '',
-            //backgroundColor: 'gray'
+            backgroundColor: isSelected == index? '#FFF5EE' : 'white'
             
           }}>
-            <Image style={{ height: 60, width: 60, }} source={{ uri: item.source }}/>
+            <Image style={{ height: 60, width: 60, borderRadius:20 }} source={{ uri: item.source }}/>
             <Text style={{
               fontWeight: isSelected == index ? 'bold' : '400',
               color: isSelected == index ? '#ff5492' : 'grey',

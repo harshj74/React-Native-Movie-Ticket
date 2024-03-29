@@ -119,6 +119,13 @@ export const popularcinemas = [
   "Sudarshan, Rajkumar Road"
 ]
 
+export const time = [
+  "09:00 A.M",
+  "11:30 A.M",
+  "01:30 P.M",
+  "03:30 P.M",
+  "05:00 P.M"
+]
 export const Seats = [
   "G1",
   "G2",
@@ -168,45 +175,6 @@ export const Seats = [
   "A4",
   "A5",
   "A6",
-];
-
-export const Theaters = [
-  {
-    id: 1,
-    name: "Trendset Mall",
-    timings: ["9:30 AM", "12:30 AM", "1:30 PM", "3:45 PM", "7:30 PM"],
-    distance: "6 km"
-  },
-  {
-    id: 2,
-    name: "PVR Cinemas",
-    timings: ["9:30 AM", "12:30 AM", "1:30 PM", "3:45 PM", "7:30 PM"],
-    distance: "11 km"
-  },
-  {
-    id: 3,
-    name: "PVP MALL Cinemas",
-    timings: ["9:30 AM", "12:30 AM", "1:30 PM", "3:45 PM", "7:30 PM"],
-    distance: "3 km"
-  },
-  {
-    id: 4,
-    name: "G3 Cinemas",
-    timings: ["9:30 AM", "12:30 AM", "1:30 PM", "3:45 PM", "7:30 PM"],
-    distance: "0 km"
-  },
-  {
-    id: 5,
-    name: "Imax Cinemas",
-    timings: ["9:30 AM", "12:30 AM", "1:30 PM", "3:45 PM", "7:30 PM"],
-    distance: "9 km"
-  },
-  {
-    id: 6,
-    name: "Alankar Cinemas",
-    timings: ["9:30 AM", "12:30 AM", "1:30 PM", "3:45 PM", "7:30 PM"],
-    distance: "16 km"
-  },
 ];
 
 export const recommended = [

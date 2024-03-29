@@ -3,5 +3,6 @@ export const actionType = {
     seatsArray: 'seatsArray',
     movie: 'movie',
     cinema: 'cinema',
-    visible: 'visible'
+    visible: 'visible',
+    managetheater: 'managetheater'
 }
